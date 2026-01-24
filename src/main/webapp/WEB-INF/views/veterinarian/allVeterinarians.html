@@ -11,6 +11,9 @@
     <div th:if="${error}">
         <p th:text="${error}"></p>
     </div>
+    <div th:if="${info}">
+        <p th:text="${info}"></p>
+    </div>
     <div th:if="${veterinarians.empty}">
         Список ветеринаров пуст!
     </div>

@@ -121,7 +121,7 @@ public class VeterinarianDAO {
     public int deleteVeterinarianById(Integer id) {
         int row = 0;
         try (Connection connection = dataSource.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement("DELETE from veterenarian where veterinarian_id = ?");
+             PreparedStatement preparedStatement = connection.prepareStatement("DELETE from veterinarian where veterinarian_id = ?");
         ) {
             preparedStatement.setInt(1, id);
             row = preparedStatement.executeUpdate();

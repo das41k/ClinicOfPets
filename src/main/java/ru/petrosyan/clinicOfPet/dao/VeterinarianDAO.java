@@ -5,10 +5,7 @@ import org.springframework.stereotype.Component;
 import ru.petrosyan.clinicOfPet.model.Veterinarian;
 
 import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,5 +37,26 @@ public class VeterinarianDAO {
             e.printStackTrace();
         }
         return veterinarians;
+    }
+
+    public Veterinarian getVeterinarianById(Integer veterinarianId) {
+        Veterinarian veterinarian= null;
+        try(Connection connection = dataSource.getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement("SELECT * from veterinarian where veterinarian_id = ?");
+        ) {
+            preparedStatement.setInt(1, veterinarianId);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    veterinarian = new Veterinarian();
+                    veterinarian.setVeterinarian_id(resultSet.getInt("veterinarian_id"));
+                    veterinarian.setName(resultSet.getString("name"));
+                    veterinarian.setPhone(resultSet.getString("phone"));
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+        }
+        return veterinarian;
     }
 }

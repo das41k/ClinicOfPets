@@ -59,4 +59,25 @@ public class VeterinarianDAO {
         }
         return veterinarian;
     }
+
+    public Veterinarian getVeterinarianByPhone(String phone) {
+        Veterinarian veterinarian= null;
+        try(Connection connection = dataSource.getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement("SELECT * from veterinarian where phone = ?");
+        ) {
+            preparedStatement.setString(1, phone);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    veterinarian = new Veterinarian();
+                    veterinarian.setVeterinarian_id(resultSet.getInt("veterinarian_id"));
+                    veterinarian.setName(resultSet.getString("name"));
+                    veterinarian.setPhone(resultSet.getString("phone"));
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+        }
+        return veterinarian;
+    }
 }

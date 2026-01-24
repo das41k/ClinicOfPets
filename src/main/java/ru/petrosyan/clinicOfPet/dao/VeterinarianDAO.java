@@ -80,4 +80,22 @@ public class VeterinarianDAO {
         }
         return veterinarian;
     }
+
+    public void insertVeterinarian(Veterinarian veterinarian) {
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("insert into veterinarian (name, phone) values (?, ?)");
+        ) {
+            preparedStatement.setString(1, veterinarian.getName());
+            preparedStatement.setString(2, veterinarian.getPhone());
+            int row = preparedStatement.executeUpdate();
+            if (row > 0) {
+                System.out.println("Insert by veterinarian is success");
+            } else {
+                System.out.println("Insert by veterinarian is unsuccess");
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+        }
+    }
 }

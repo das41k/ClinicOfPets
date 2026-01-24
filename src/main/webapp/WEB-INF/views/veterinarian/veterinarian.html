@@ -23,6 +23,9 @@
     </div>
     <div>
         <a th:href="@{/veterinarian/{id}/edit(id=${veterinarian.veterinarian_id})}"> Обновить сведения </a>
+        <form th:action="@{/veterinarian/{id}(id=${veterinarian.veterinarian_id})}" th:method="DELETE">
+            <input type="submit" value="Удалить ветеринара">
+        </form>
     </div>
 </body>
 </html>

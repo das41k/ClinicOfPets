@@ -117,4 +117,18 @@ public class VeterinarianDAO {
             e.printStackTrace();
         }
     }
+
+    public int deleteVeterinarianById(Integer id) {
+        int row = 0;
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("DELETE from veterinarian where veterinarian_id = ?");
+        ) {
+            preparedStatement.setInt(1, id);
+            row = preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+        }
+        return row;
+    }
 }

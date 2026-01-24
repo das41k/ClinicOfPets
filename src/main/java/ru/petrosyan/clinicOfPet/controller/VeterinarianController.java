@@ -82,4 +82,15 @@ public class VeterinarianController {
         veterinarianDAO.updateVeterinarian(veterinarian);
         return "redirect:/veterinarian";
     }
+
+    @DeleteMapping("/{id}")
+    public String deleteVeterinarianById(@PathVariable("id") Integer id, RedirectAttributes redirectAttributes) {
+        int row = veterinarianDAO.deleteVeterinarianById(id);
+        if (row > 0) {
+            redirectAttributes.addFlashAttribute("info", "Ветеринар был успешно удален!");
+        }  else {
+            redirectAttributes.addFlashAttribute("error", "Ветеринар не был найден в системе. Возможно он был удален!");
+        }
+        return "redirect:/veterinarian";
+    }
 }

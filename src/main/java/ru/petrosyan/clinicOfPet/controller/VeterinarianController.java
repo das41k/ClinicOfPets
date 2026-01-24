@@ -70,4 +70,16 @@ public class VeterinarianController {
         redirectAttributes.addFlashAttribute("error", "Данный ветеринар на найден. Возможно он был удален!");
         return "redirect:/veterinarian";
     }
+
+    @PatchMapping("/{id}")
+    public String updateVeterinarian(@ModelAttribute @Valid Veterinarian veterinarian, BindingResult bindingResult,
+                                     @PathVariable("id") Integer id) {
+        veterinarian.setVeterinarian_id(id);
+        veterinarianValidator.validate(veterinarian, bindingResult);
+        if (bindingResult.hasErrors()) {
+            return "veterinarian/editVeterinarian";
+        }
+        veterinarianDAO.updateVeterinarian(veterinarian);
+        return "redirect:/veterinarian";
+    }
 }

@@ -59,4 +59,43 @@ public class VeterinarianDAO {
         }
         return veterinarian;
     }
+
+    public Veterinarian getVeterinarianByPhone(String phone) {
+        Veterinarian veterinarian= null;
+        try(Connection connection = dataSource.getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement("SELECT * from veterinarian where phone = ?");
+        ) {
+            preparedStatement.setString(1, phone);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    veterinarian = new Veterinarian();
+                    veterinarian.setVeterinarian_id(resultSet.getInt("veterinarian_id"));
+                    veterinarian.setName(resultSet.getString("name"));
+                    veterinarian.setPhone(resultSet.getString("phone"));
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+        }
+        return veterinarian;
+    }
+
+    public void insertVeterinarian(Veterinarian veterinarian) {
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("insert into veterinarian (name, phone) values (?, ?)");
+        ) {
+            preparedStatement.setString(1, veterinarian.getName());
+            preparedStatement.setString(2, veterinarian.getPhone());
+            int row = preparedStatement.executeUpdate();
+            if (row > 0) {
+                System.out.println("Insert by veterinarian is success");
+            } else {
+                System.out.println("Insert by veterinarian is unsuccess");
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+        }
+    }
 }

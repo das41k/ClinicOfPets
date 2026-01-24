@@ -98,4 +98,23 @@ public class VeterinarianDAO {
             e.printStackTrace();
         }
     }
+
+    public void updateVeterinarian(Veterinarian veterinarian) {
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("Update veterinarian set name=?, phone=? where veterinarian_id=?");
+        ) {
+            preparedStatement.setString(1, veterinarian.getName());
+            preparedStatement.setString(2, veterinarian.getPhone());
+            preparedStatement.setInt(3, veterinarian.getVeterinarian_id());
+            int row = preparedStatement.executeUpdate();
+            if (row > 0) {
+                System.out.println("Update by veterinarian is success");
+            } else {
+                System.out.println("Update by veterinarian is unsuccess");
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+        }
+    }
 }

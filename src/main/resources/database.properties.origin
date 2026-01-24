@@ -1,0 +1,5 @@
+database.url =
+database.username =
+database.password =
+
+вставить свои данные в database.properties

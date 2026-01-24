@@ -60,4 +60,14 @@ public class VeterinarianController {
         return "redirect:/veterinarian";
     }
 
+    @GetMapping("/{id}/edit")
+    public String getFormUpdate(@PathVariable("id") Integer id, Model model, RedirectAttributes redirectAttributes) {
+        Veterinarian veterinarian = veterinarianDAO.getVeterinarianById(id);
+        if (veterinarian != null) {
+            model.addAttribute("veterinarian", veterinarian);
+            return "veterinarian/editVeterinarian";
+        }
+        redirectAttributes.addFlashAttribute("error", "Данный ветеринар на найден. Возможно он был удален!");
+        return "redirect:/veterinarian";
+    }
 }

@@ -13,7 +13,7 @@ public class Veterinarian {
     String name;
 
     @NotBlank(message = "Телефон не может быть пуст!")
-    @Pattern(regexp = "^((\\+7|8)\\d{10})$")
+    @Pattern(regexp = "^((\\+7|8)\\d{10})$", message = "Телефон должен начинаться с +7 или с 8, а затем содержать 10 цифр")
     String phone;
 
     public Veterinarian(Integer veterinarian_id, String name, String phone) {

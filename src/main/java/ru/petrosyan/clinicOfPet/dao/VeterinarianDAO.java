@@ -45,7 +45,7 @@ public class VeterinarianDAO {
             PreparedStatement preparedStatement = connection.prepareStatement("SELECT * from veterinarian where veterinarian_id = ?");
         ) {
             preparedStatement.setInt(1, veterinarianId);
-            try (ResultSet resultSet = preparedStatement.getResultSet()) {
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (resultSet.next()) {
                     veterinarian = new Veterinarian();
                     veterinarian.setVeterinarian_id(resultSet.getInt("veterinarian_id"));

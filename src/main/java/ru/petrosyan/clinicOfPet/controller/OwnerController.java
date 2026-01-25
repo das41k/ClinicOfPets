@@ -40,4 +40,10 @@ public class OwnerController {
         redirectAttributes.addFlashAttribute("error", "Владелец не был найден в системе. Возможно он был удален!");
         return "redirect:/owner";
     }
+
+    @GetMapping("/new")
+    public String getFormInsert(Model model) {
+        model.addAttribute("owner", new Owner());
+        return "owner/newOwner";
+    }
 }

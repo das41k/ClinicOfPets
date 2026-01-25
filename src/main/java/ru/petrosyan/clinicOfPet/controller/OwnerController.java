@@ -81,4 +81,15 @@ public class OwnerController {
         ownerDAO.updateOwner(owner);
         return "redirect:/owner";
     }
+
+    @DeleteMapping("/{id}")
+    public String deleteOwnerById(@PathVariable("id") Integer ownerId, RedirectAttributes redirectAttributes) {
+        int row = ownerDAO.deleteOwnerById(ownerId);
+        if (row > 0) {
+            redirectAttributes.addFlashAttribute("info", "Владелец был успешно удален!");
+        } else {
+            redirectAttributes.addFlashAttribute("error", "Владелец не был найден в системе. Возможно он был удален!");
+        }
+        return "redirect:/owner";
+    }
 }

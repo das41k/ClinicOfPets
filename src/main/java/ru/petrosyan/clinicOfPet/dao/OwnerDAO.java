@@ -117,4 +117,18 @@ public class OwnerDAO {
             e.printStackTrace();
         }
     }
+
+    public int deleteOwnerById(Integer ownerId) {
+        int row = 0;
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("delete from owner where owner_id=?")
+        ) {
+            preparedStatement.setInt(1, ownerId);
+            row = preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+        }
+        return row;
+    }
 }

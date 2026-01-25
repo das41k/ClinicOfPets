@@ -5,10 +5,7 @@ import org.springframework.stereotype.Component;
 import ru.petrosyan.clinicOfPet.model.Owner;
 
 import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,5 +37,26 @@ public class OwnerDAO {
             e.printStackTrace();
         }
         return owners;
+    }
+
+    public Owner getOwnerById(Integer ownerId) {
+        Owner owner = null;
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("SELECT * from owner where owner_id = ?");
+        ) {
+            preparedStatement.setInt(1, ownerId);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    owner = new Owner();
+                    owner.setOwner_id(resultSet.getInt("owner_id"));
+                    owner.setName(resultSet.getString("name"));
+                    owner.setPhone(resultSet.getString("phone"));
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+        }
+        return owner;
     }
 }

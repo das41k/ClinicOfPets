@@ -98,4 +98,23 @@ public class OwnerDAO {
             e.printStackTrace();
         }
     }
+
+    public void updateOwner(Owner owner) {
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("update owner set name=?, phone=? where owner_id = ?");
+        ) {
+            preparedStatement.setString(1, owner.getName());
+            preparedStatement.setString(2, owner.getPhone());
+            preparedStatement.setInt(3, owner.getOwner_id());
+            int row = preparedStatement.executeUpdate();
+            if (row > 0) {
+                System.out.println("Update by owner is success");
+            } else {
+                System.out.println("Updatre by owner is unsuccess");
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+        }
+    }
 }

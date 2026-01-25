@@ -59,4 +59,43 @@ public class OwnerDAO {
         }
         return owner;
     }
+
+    public Owner getOwnerByPhone(String phone) {
+        Owner owner = null;
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("select * from owner where phone=?")
+        ) {
+            preparedStatement.setString(1, phone);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    owner = new Owner();
+                    owner.setOwner_id(resultSet.getInt("owner_id"));
+                    owner.setName(resultSet.getString("name"));
+                    owner.setPhone(resultSet.getString("phone"));
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+        }
+        return owner;
+    }
+
+    public void insertOwner(Owner owner) {
+        try (Connection connection = dataSource.getConnection();
+            PreparedStatement preparedStatement = connection.prepareStatement("insert into owner (name, phone) values (?, ?)");
+        ) {
+            preparedStatement.setString(1, owner.getName());
+            preparedStatement.setString(2, owner.getPhone());
+            int row = preparedStatement.executeUpdate();
+            if (row > 0) {
+                System.out.println("Insert by owner is success");
+            } else {
+                System.out.println("Insert by owner is unsuccess");
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+        }
+    }
 }

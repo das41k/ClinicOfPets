@@ -60,6 +60,27 @@ public class OwnerDAO {
         return owner;
     }
 
+    public Owner getOwnerByPhone(String phone) {
+        Owner owner = null;
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("select * from owner where phone=?")
+        ) {
+            preparedStatement.setString(1, phone);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    owner = new Owner();
+                    owner.setOwner_id(resultSet.getInt("owner_id"));
+                    owner.setName(resultSet.getString("name"));
+                    owner.setPhone(resultSet.getString("phone"));
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+        }
+        return owner;
+    }
+
     public void insertOwner(Owner owner) {
         try (Connection connection = dataSource.getConnection();
             PreparedStatement preparedStatement = connection.prepareStatement("insert into owner (name, phone) values (?, ?)");

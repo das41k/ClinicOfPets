@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!--/*@thymesVar id="owner" type="ru.petrosyan.clinicOfPet.model.Owner"*/-->
+    <title th:text="${owner.name}"></title>
+    <link rel="stylesheet" th:href="@{/css/owner-styles.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+<div>
+    <h2> Информация о владельце </h2>
+    <!--/*@thymesVar id="owner" type="ru.petrosyan.clinicOfPet.model.Owner"*/-->
+    <div th:object="${owner}">
+        <p th:text="*{name}"> ФИО </p>
+        <p th:text="*{phone}"> Контактный телефон </p>
+    </div>
+</div>
+<div>
+    <h2> Список питомцев </h2>
+    <!-- Добавить позже, выше ближайшие незавершенные, ниже завершенные -->
+</div>
+<div>
+    <!--/*@thymesVar id="owner" type="ru.petrosyan.clinicOfPet.model.Owner"*/-->
+    <a th:href="@{/owner/{id}/edit(id=${owner.owner_id})}"> Обновить сведения </a>
+    <form th:action="@{/owner/{id}(id=${owner.owner_id})}" th:method="DELETE">
+        <input type="submit" value="Удалить владельца">
+    </form>
+</div>
+</body>
+</html>

@@ -110,7 +110,7 @@ public class OwnerDAO {
             if (row > 0) {
                 System.out.println("Update by owner is success");
             } else {
-                System.out.println("Updatre by owner is unsuccess");
+                System.out.println("Update by owner is unsuccess");
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());

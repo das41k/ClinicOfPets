@@ -59,4 +59,26 @@ public class OwnerController {
         ownerDAO.insertOwner(owner);
         return "redirect:/owner";
     }
+
+    @GetMapping("/{id}/edit")
+    public String getFormUpdate(@PathVariable("id") Integer ownerId, Model model, RedirectAttributes redirectAttributes) {
+        Owner owner = ownerDAO.getOwnerById(ownerId);
+        if (owner != null) {
+            model.addAttribute("owner", owner);
+            return "/owner/editOwner";
+        }
+        redirectAttributes.addFlashAttribute("error", "Владелец не был найден в системе. Возможно он был удален!");
+        return "redirect:/owner";
+    }
+
+    @PatchMapping("/{id}")
+    public String updateOwner(@ModelAttribute("owner") @Valid Owner owner, @PathVariable("id") Integer ownerId ,BindingResult bindingResult) {
+        owner.setOwner_id(ownerId);
+        ownerValidator.validate(owner, bindingResult);
+        if (bindingResult.hasErrors()) {
+            return "owner/editOwner";
+        }
+        ownerDAO.updateOwner(owner);
+        return "redirect:/owner";
+    }
 }

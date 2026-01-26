@@ -28,12 +28,11 @@
         <div th:if="${#fields.hasErrors()}" th:errors="*{petType}"></div>
 
         <label> Выберите владельца
-            <select th:field="*{owner}" id="petOwner" required>
+            <select name="ownerId" id="petOwner" required>
                 <!--/*@thymesVar id="owner" type="ru.petrosyan.clinicOfPet.model.Owner"*/-->
-                <option th:each="owner : ${owners}" th:value="${owner}" th:text="${owner.name}"> </option>
+                <option th:each="owner : ${owners}" th:value="${owner.owner_id}" th:text="${owner.name}"> </option>
             </select>
         </label>
-        <div th:if="${#fields.hasErrors()}" th:errors="*{owner}"></div>
 
         <input type="submit" value="Добавить">
     </form>

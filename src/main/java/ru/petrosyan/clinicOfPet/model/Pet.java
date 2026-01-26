@@ -20,6 +20,7 @@ public class Pet {
     private LocalDate dateBirth;
 
     private Owner owner;
+
     @NotBlank(message = "Выберите тип питомца!")
     private String petType;
 

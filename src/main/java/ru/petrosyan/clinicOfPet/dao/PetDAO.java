@@ -64,6 +64,24 @@ public class PetDAO {
         return petType;
     }
 
+    public Integer getPetTypeIdByName(String name) {
+        Integer petTypeId = null;
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("SELECT * from pet_type where name = ?");
+        ) {
+            preparedStatement.setString(1, name);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    petTypeId = resultSet.getInt("pet_type_id");
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+        }
+        return petTypeId;
+    }
+
     public Pet getPetById(Integer petId) {
         Pet pet = null;
 
@@ -90,4 +108,26 @@ public class PetDAO {
         return pet;
     }
 
+    public void insertPet(Pet pet) {
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("insert into pet " +
+                     "(name, date_birth, pet_type_id, owner_id) values (?,?,?,?)")
+        ) {
+            preparedStatement.setString(1, pet.getName());
+            preparedStatement.setDate(2, Date.valueOf(pet.getDateBirth()));
+            Integer petTypeId = getPetTypeIdByName(pet.getPetType());
+            preparedStatement.setInt(3, petTypeId);
+            preparedStatement.setInt(4, pet.getOwner().getOwner_id());
+
+            int row = preparedStatement.executeUpdate();
+            if (row > 0) {
+                System.out.println("Insert by pet is success");
+            } else {
+                System.out.println("Insert by pet is unsuccess");
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+        }
+    }
 }

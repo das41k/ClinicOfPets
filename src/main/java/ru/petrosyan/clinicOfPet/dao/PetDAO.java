@@ -130,4 +130,20 @@ public class PetDAO {
             e.printStackTrace();
         }
     }
+
+    public List<String> getAllPetTypes() {
+        List<String> petTypes = new ArrayList<>();
+        try (Connection connection = dataSource.getConnection();
+             Statement statement = connection.createStatement();
+             ResultSet resultSet = statement.executeQuery("SELECT * from pet_type")
+        ) {
+            while (resultSet.next()) {
+                petTypes.add(resultSet.getString("name"));
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+        }
+        return petTypes;
+    }
 }

@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Клиника питомцев - Список питомцев</title>
+    <link rel="stylesheet" th:href="@{/css/pet-styles.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+<div th:if="${error}">
+    <p th:text="${error}"></p>
+</div>
+<div th:if="${info}">
+    <p th:text="${info}"></p>
+</div>
+<div th:if="${pets.empty}">
+    Список питомцев пуст!
+</div>
+<div th:if="not ${pets.empty}">
+    <table>
+        <thead>
+        <tr>
+            <th>№</th>
+            <th>ФИО</th>
+            <th>Дата рождения</th>
+            <th> Тип питомца </th>
+            <th> Владелец </th>
+            <th> Просмотр питомца </th>
+        </tr>
+        </thead>
+        <tbody>
+        <!--/*@thymesVar id="pet" type="ru.petrosyan.clinicOfPet.model.Pet"*/-->
+        <tr th:each="pet, iterStat : ${pets}" th:object="${pet}">
+            <td th:text="${iterStat.index}"> 3 </td>
+            <td th:text="*{name}"> Муся </td>
+            <td th:text="*{dateBirth}"> 2025-06-06 </td>
+            <td th:text="*{petType}"> Попугай </td>
+            <td>
+                <a th:href="@{owner/{id}(id = *{owner.owner_id})}" th:text="*{owner.name}">  </a>
+            </td>
+            <td>
+                <a th:href="@{/pet/{id}(id = *{pet_id})}">
+                    Посмотреть сведения
+                </a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+<div>
+    <a th:href="@{/pet/new}"> Добавить нового питомца </a>
+</div>
+</body>
+</html>

@@ -93,4 +93,15 @@ public class PetController {
         petDAO.updatePet(pet);
         return "redirect:/pet";
     }
+
+    @DeleteMapping("/{id}")
+    public String deletePetById(@PathVariable("id") Integer id, RedirectAttributes redirectAttributes) {
+        int row = petDAO.deletePetById(id);
+        if (row > 0) {
+            redirectAttributes.addFlashAttribute("info", "Питомец был успешно удален!");
+        } else {
+            redirectAttributes.addFlashAttribute("error", "Питомец не был найден в системе! Возможно он удален.");
+        }
+        return "redirect:/pet";
+    }
 }

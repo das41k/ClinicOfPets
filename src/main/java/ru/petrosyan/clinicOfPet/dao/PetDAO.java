@@ -170,4 +170,18 @@ public class PetDAO {
         }
         return petTypes;
     }
+
+    public int deletePetById(Integer petId) {
+        int row = 0;
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("delete from pet where pet_id = ?");
+        ) {
+            preparedStatement.setInt(1, petId);
+            row = preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+        }
+        return row;
+    }
 }

@@ -28,7 +28,7 @@
         <div th:if="${#fields.hasErrors()}" th:errors="*{petType}"></div>
 
         <label> Выберите владельца
-            <select th:field="*{owner}" id="petOwner">
+            <select th:field="*{owner}" id="petOwner" required>
                 <!--/*@thymesVar id="owner" type="ru.petrosyan.clinicOfPet.model.Owner"*/-->
                 <option th:each="owner : ${owners}" th:value="${owner}" th:text="${owner.name}"> </option>
             </select>

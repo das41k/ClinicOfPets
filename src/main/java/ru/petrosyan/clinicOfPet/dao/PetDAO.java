@@ -131,6 +131,30 @@ public class PetDAO {
         }
     }
 
+    public void updatePet(Pet pet) {
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("update pet " +
+                     "set name=?, date_birth=?, pet_type_id=?, owner_id=? where pet_id=?")
+        ) {
+            preparedStatement.setString(1, pet.getName());
+            preparedStatement.setDate(2, Date.valueOf(pet.getDateBirth()));
+            Integer petTypeId = getPetTypeIdByName(pet.getPetType());
+            preparedStatement.setInt(3, petTypeId);
+            preparedStatement.setInt(4, pet.getOwner().getOwner_id());
+            preparedStatement.setInt(5, pet.getPet_id());
+
+            int row = preparedStatement.executeUpdate();
+            if (row > 0) {
+                System.out.println("Update by pet is success");
+            } else {
+                System.out.println("Update by pet is unsuccess");
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
     public List<String> getAllPetTypes() {
         List<String> petTypes = new ArrayList<>();
         try (Connection connection = dataSource.getConnection();

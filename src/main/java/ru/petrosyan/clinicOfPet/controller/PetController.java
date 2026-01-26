@@ -47,11 +47,11 @@ public class PetController {
     @GetMapping("/new")
     public String getFormInsert(Model model) {
         model.addAttribute("pet", new Pet());
-        getFormInsertDetails(model);
+        getFormDetails(model);
         return "pet/addPet";
     }
 
-    public void getFormInsertDetails(Model model) {
+    public void getFormDetails(Model model) {
         model.addAttribute("petTypes", petDAO.getAllPetTypes());
         model.addAttribute("owners", ownerDAO.getAllOwners());
     }
@@ -60,11 +60,37 @@ public class PetController {
     public String insertPet(@ModelAttribute("pet") @Valid Pet pet, BindingResult bindingResult,
                             Model model, @RequestParam(value = "ownerId", required = false) Integer ownerId) {
         if (bindingResult.hasErrors()) {
-            getFormInsertDetails(model);
+            getFormDetails(model);
             return "pet/addPet";
         }
         pet.setOwner(ownerDAO.getOwnerById(ownerId));
         petDAO.insertPet(pet);
+        return "redirect:/pet";
+    }
+
+    @GetMapping("/{id}/edit")
+    public String getUpdateForm(@PathVariable("id") Integer petId, Model model, RedirectAttributes redirectAttributes) {
+        Pet pet = petDAO.getPetById(petId);
+        if (pet != null) {
+            model.addAttribute("pet", pet);
+            getFormDetails(model);
+            return "pet/editPet";
+        }
+        redirectAttributes.addFlashAttribute("error", "Питомец не был найден в системе! Возможно он удален.");
+        return "redirect:/pet";
+    }
+
+    @PatchMapping("/{id}")
+    public String updatePet(@PathVariable("id") Integer petId, @ModelAttribute("pet") @Valid Pet pet,
+                            BindingResult bindingResult, Model model,
+                            @RequestParam(value = "ownerId", required = false) Integer ownerId) {
+        pet.setPet_id(petId);
+        if (bindingResult.hasErrors()) {
+            getFormDetails(model);
+            return "pet/editPet";
+        }
+        pet.setOwner(ownerDAO.getOwnerById(ownerId));
+        petDAO.updatePet(pet);
         return "redirect:/pet";
     }
 }

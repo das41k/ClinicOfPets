@@ -25,6 +25,7 @@
                 <option th:each="petType : ${petTypes}" th:value="${petType}" th:text="${petType}"> </option>
             </select>
         </label>
+        <div th:if="${#fields.hasErrors()}" th:errors="*{petType}"></div>
 
         <label> Выберите владельца
             <select th:field="*{owner}" id="petOwner">
@@ -32,6 +33,7 @@
                 <option th:each="owner : ${owners}" th:value="${owner}" th:text="${owner.name}"> </option>
             </select>
         </label>
+        <div th:if="${#fields.hasErrors()}" th:errors="*{owner}"></div>
 
         <input type="submit" value="Добавить">
     </form>

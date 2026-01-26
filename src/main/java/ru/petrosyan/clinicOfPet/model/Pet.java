@@ -20,18 +20,18 @@ public class Pet {
     private LocalDate dateBirth;
 
     @NotBlank(message = "Выберите владельца!")
-    private Integer owner_id;
+    private Owner owner;
     @NotBlank(message = "Выберите тип питомца!")
-    private Integer petType_id;
+    private String petType;
 
     public Pet() {}
 
-    public Pet(Integer pet_id, String name, LocalDate dateBirth, Integer owner_id, Integer petType_id) {
+    public Pet(Integer pet_id, String name, LocalDate dateBirth, Owner owner, String petType) {
         this.pet_id = pet_id;
         this.name = name;
         this.dateBirth = dateBirth;
-        this.owner_id = owner_id;
-        this.petType_id = petType_id;
+        this.owner = owner;
+        this.petType = petType;
     }
 
     public Integer getPet_id() {
@@ -46,12 +46,12 @@ public class Pet {
         return dateBirth;
     }
 
-    public Integer getOwner_id() {
-        return owner_id;
+    public Owner getOwner() {
+        return owner;
     }
 
-    public Integer getPetType_id() {
-        return petType_id;
+    public String getPetType() {
+        return petType;
     }
 
     public void setPet_id(Integer pet_id) {
@@ -66,11 +66,11 @@ public class Pet {
         this.dateBirth = dateBirth;
     }
 
-    public void setOwner_id(Integer owner_id) {
-        this.owner_id = owner_id;
+    public void setOwner(Owner owner) {
+        this.owner = owner;
     }
 
-    public void setPetType_id(Integer petType_id) {
-        this.petType_id = petType_id;
+    public void setPetType(String petType) {
+        this.petType = petType;
     }
 }

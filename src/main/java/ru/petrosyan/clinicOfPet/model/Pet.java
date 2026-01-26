@@ -19,7 +19,9 @@ public class Pet {
     @PastOrPresent(message = "Дата рождения не может быть в будущем!")
     private LocalDate dateBirth;
 
+    @NotBlank(message = "Выберите владельца!")
     private Integer owner_id;
+    @NotBlank(message = "Выберите тип питомца!")
     private Integer petType_id;
 
     public Pet() {}

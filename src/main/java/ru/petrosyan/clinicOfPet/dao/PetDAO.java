@@ -64,4 +64,30 @@ public class PetDAO {
         return petType;
     }
 
+    public Pet getPetById(Integer petId) {
+        Pet pet = null;
+
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("SELECT * from pet where pet_id = ?");
+        ) {
+            preparedStatement.setInt(1, petId);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    pet = new Pet();
+                    pet.setPet_id(resultSet.getInt("pet_id"));
+                    pet.setName(resultSet.getString("name"));
+                    pet.setDateBirth(resultSet.getDate("date_birth").toLocalDate());
+                    Owner owner = ownerDAO.getOwnerById(resultSet.getInt("owner_id"));
+                    pet.setOwner(owner);
+                    String petType = getPetTypeById(resultSet.getInt("pet_type_id"));
+                    pet.setPetType(petType);
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+        }
+        return pet;
+    }
+
 }

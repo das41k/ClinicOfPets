@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import ru.petrosyan.clinicOfPet.dao.OwnerDAO;
 import ru.petrosyan.clinicOfPet.dao.PetDAO;
 import ru.petrosyan.clinicOfPet.model.Pet;
 import java.util.List;
@@ -16,10 +17,12 @@ import java.util.List;
 public class PetController {
 
     private final PetDAO petDAO;
+    private final OwnerDAO ownerDAO;
 
     @Autowired
-    public PetController(PetDAO petDAO) {
+    public PetController(PetDAO petDAO, OwnerDAO ownerDAO) {
         this.petDAO = petDAO;
+        this.ownerDAO = ownerDAO;
     }
 
     @GetMapping
@@ -38,5 +41,13 @@ public class PetController {
         }
         redirectAttributes.addFlashAttribute("error", "Питомец не был найден в системе! Возможно он удален.");
         return "redirect:/pet";
+    }
+
+    @GetMapping("/new")
+    public String getFormInsert(Model model) {
+        model.addAttribute("pet", new Pet());
+        model.addAttribute("petTypes", petDAO.getAllPetTypes());
+        model.addAttribute("owners", ownerDAO.getAllOwners());
+        return "pet/addPet";
     }
 }

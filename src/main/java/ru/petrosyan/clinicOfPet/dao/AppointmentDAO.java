@@ -6,6 +6,8 @@ import ru.petrosyan.clinicOfPet.model.AppointmentStatus;
 
 import javax.sql.DataSource;
 import java.sql.*;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -52,6 +54,34 @@ public class AppointmentDAO {
              PreparedStatement preparedStatement = connection.prepareStatement("SELECT * from appointment where appointment_id = ?")
         ) {
             preparedStatement.setInt(1, id);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    appointment = new Appointment();
+                    appointment.setAppointment_id(resultSet.getInt("appointment_id"));
+                    appointment.setDateAdmission(resultSet.getDate("date_admission").toLocalDate());
+                    appointment.setTimeAdmission(resultSet.getTime("time_admission").toLocalTime());
+                    AppointmentStatus status = AppointmentStatus.fromDbValue(resultSet.getString("status"));
+                    appointment.setStatus(status);
+                    appointment.setPet(petDAO.getPetById(resultSet.getInt("pet_id")));
+                    appointment.setVeterinarian(veterinarianDAO.getVeterinarianById(resultSet.getInt("veterinarian_id")));
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+        }
+        return appointment;
+    }
+
+    public Appointment getAppointmentByDateTimeAndVeterinarian(LocalDate date, LocalTime time, Integer veterinarianId) {
+        Appointment appointment = null;
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("SELECT * from appointment where date_admission = ? " +
+                     "and time_admission = ? and veterinarian_id=?")
+        ) {
+            preparedStatement.setDate(1,  Date.valueOf(date));
+            preparedStatement.setTime(2, Time.valueOf(time));
+            preparedStatement.setInt(3, veterinarianId);
             try (ResultSet resultSet = preparedStatement.executeQuery()) {
                 if (resultSet.next()) {
                     appointment = new Appointment();

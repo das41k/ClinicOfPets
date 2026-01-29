@@ -5,10 +5,7 @@ import ru.petrosyan.clinicOfPet.model.Appointment;
 import ru.petrosyan.clinicOfPet.model.AppointmentStatus;
 
 import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,5 +44,30 @@ public class AppointmentDAO {
             e.printStackTrace();
         }
         return appointments;
+    }
+
+    public Appointment getByIdAppointment(Integer id) {
+        Appointment appointment = null;
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("SELECT * from appointment where appointment_id = ?")
+        ) {
+            preparedStatement.setInt(1, id);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    appointment = new Appointment();
+                    appointment.setAppointment_id(resultSet.getInt("appointment_id"));
+                    appointment.setDateAdmission(resultSet.getDate("date_admission").toLocalDate());
+                    appointment.setTimeAdmission(resultSet.getTime("time_admission").toLocalTime());
+                    AppointmentStatus status = AppointmentStatus.fromDbValue(resultSet.getString("status"));
+                    appointment.setStatus(status);
+                    appointment.setPet(petDAO.getPetById(resultSet.getInt("pet_id")));
+                    appointment.setVeterinarian(veterinarianDAO.getVeterinarianById(resultSet.getInt("veterinarian_id")));
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+        }
+        return appointment;
     }
 }

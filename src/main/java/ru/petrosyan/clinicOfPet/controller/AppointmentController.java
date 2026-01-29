@@ -76,4 +76,29 @@ public class AppointmentController {
         appointmentDAO.insertAppointment(appointment);
         return "redirect:/appointment";
     }
+
+    @GetMapping("/{id}/edit")
+    public String getFormUpdate(@PathVariable("id") Integer id, Model model, RedirectAttributes redirectAttributes) {
+        Appointment appointment = appointmentDAO.getByIdAppointment(id);
+        if (appointment != null) {
+            model.addAttribute("appointment", appointment);
+            getDetailsForm(model);
+            return "appointment/editAppointment";
+        }
+        redirectAttributes.addFlashAttribute("error", "Данный прием не найден! Возможно он был удален!");
+        return "redirect:/appointment";
+    }
+
+    @PatchMapping("/{id}")
+    public String updateAppointment(@ModelAttribute("appointment") @Valid Appointment appointment, BindingResult bindingResult,
+                                    @PathVariable("id") Integer id, Model model) {
+        appointment.setAppointment_id(id);
+        appointmentValidator.validate(appointment, bindingResult);
+        if (bindingResult.hasErrors()) {
+            getDetailsForm(model);
+            return "appointment/editAppointment";
+        }
+        appointmentDAO.updateAppointment(appointment);
+        return "redirect:/appointment";
+    }
 }

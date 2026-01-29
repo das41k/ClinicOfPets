@@ -1,5 +1,6 @@
 package ru.petrosyan.clinicOfPet.model;
 
+import javax.validation.constraints.FutureOrPresent;
 import javax.validation.constraints.NotBlank;
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -8,6 +9,7 @@ public class Appointment {
     private Integer appointment_id;
 
     @NotBlank(message = "Дата приема не может быть пустой!")
+    @FutureOrPresent(message = "Дата не может быть позже сегодняшней!")
     private LocalDate dateAdmission;
 
     @NotBlank(message = "Время приема не может быть пустым!")

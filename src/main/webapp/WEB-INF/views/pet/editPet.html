@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Обновить питомца</title>
+    <link rel="stylesheet" th:href="@{/css/pet-styles.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+<!--/*@thymesVar id="pet" type="ru.petrosyan.clinicOfPet.model.Pet"*/-->
+<form th:action="@{/pet/{id}(id=${pet.pet_id})}" th:method="PATCH" th:object="${pet}">
+    <label> Введите Имя
+        <input type="text" th:field="*{name}">
+    </label>
+    <div th:if="${#fields.hasErrors()}" th:errors="*{name}"></div>
+
+    <label> Выберите дату рождения
+        <input type="date" th:field="*{dateBirth}">
+    </label>
+    <div th:if="${#fields.hasErrors()}" th:errors="*{dateBirth}"></div>
+
+    <label> Выберите тип животного
+        <select th:field="*{petType}" id="petType">
+            <option th:each="petType : ${petTypes}" th:value="${petType}" th:text="${petType}"> </option>
+        </select>
+    </label>
+    <div th:if="${#fields.hasErrors()}" th:errors="*{petType}"></div>
+
+    <label> Выберите владельца
+        <select name="ownerId" id="petOwner" required>
+            <!--/*@thymesVar id="owner" type="ru.petrosyan.clinicOfPet.model.Owner"*/-->
+            <option th:each="owner : ${owners}" th:value="${owner.owner_id}" th:text="${owner.name}"> </option>
+        </select>
+    </label>
+
+    <input type="submit" value="Обновить">
+</form>
+</body>
+</html>

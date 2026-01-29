@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Сведения о питомце</title>
+    <link rel="stylesheet" th:href="@{/css/pet-styles.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div>
+        <h2> Информация о питомце </h2>
+        <!--/*@thymesVar id="pet" type="ru.petrosyan.clinicOfPet.model.Pet"*/-->
+        <div th:object="${pet}">
+            <p th:text="*{name}"> Имя </p>
+            <p th:text="*{dateBirth}"> Дата рождения </p>
+            <p th:text="*{petType}"> Тип питомца </p>
+            <div>
+                <h2> Сведения о владельце </h2>
+                <div>
+                    <p th:text="*{owner.name}"> ФИО </p>
+                    <p th:text="*{owner.phone}"> Контактный телефон </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div>
+        <!--/*@thymesVar id="pet" type="ru.petrosyan.clinicOfPet.model.Pet"*/-->
+        <a th:href="@{/pet/{id}/edit(id=${pet.pet_id})}"> Обновить сведения </a>
+        <form th:action="@{/pet/{id}(id=${pet.pet_id})}" th:method="DELETE">
+            <input type="submit" value="Удалить питомца">
+        </form>
+    </div>
+</body>
+</html>

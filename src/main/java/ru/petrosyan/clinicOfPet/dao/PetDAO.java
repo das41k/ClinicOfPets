@@ -1,0 +1,187 @@
+package ru.petrosyan.clinicOfPet.dao;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import ru.petrosyan.clinicOfPet.model.Owner;
+import ru.petrosyan.clinicOfPet.model.Pet;
+
+import javax.sql.DataSource;
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
+
+@Component
+public class PetDAO {
+    private final DataSource dataSource;
+    private final OwnerDAO ownerDAO;
+
+    @Autowired
+    public PetDAO(DataSource dataSource, OwnerDAO ownerDAO) {
+        this.dataSource = dataSource;
+        this.ownerDAO = ownerDAO;
+    }
+
+    public List<Pet> getAllPets() {
+
+        List<Pet> pets = new ArrayList<>();
+        try (Connection connection = dataSource.getConnection();
+             Statement statement = connection.createStatement();
+             ResultSet resultSet = statement.executeQuery("SELECT * from pet");
+        ) {
+            while (resultSet.next()) {
+                Pet pet = new Pet();
+                pet.setPet_id(resultSet.getInt("pet_id"));
+                pet.setName(resultSet.getString("name"));
+                pet.setDateBirth(resultSet.getDate("date_birth").toLocalDate());
+                Owner owner = ownerDAO.getOwnerById(resultSet.getInt("owner_id"));
+                pet.setOwner(owner);
+                String petType = getPetTypeById(resultSet.getInt("pet_type_id"));
+                pet.setPetType(petType);
+                pets.add(pet);
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+        }
+        return pets;
+    }
+
+    public String getPetTypeById(Integer id) {
+        String petType = null;
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("SELECT * from pet_type where pet_type_id = ?");
+        ) {
+            preparedStatement.setInt(1, id);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    petType = resultSet.getString("name");
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+        }
+        return petType;
+    }
+
+    public Integer getPetTypeIdByName(String name) {
+        Integer petTypeId = null;
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("SELECT * from pet_type where name = ?");
+        ) {
+            preparedStatement.setString(1, name);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    petTypeId = resultSet.getInt("pet_type_id");
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+        }
+        return petTypeId;
+    }
+
+    public Pet getPetById(Integer petId) {
+        Pet pet = null;
+
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("SELECT * from pet where pet_id = ?");
+        ) {
+            preparedStatement.setInt(1, petId);
+            try (ResultSet resultSet = preparedStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    pet = new Pet();
+                    pet.setPet_id(resultSet.getInt("pet_id"));
+                    pet.setName(resultSet.getString("name"));
+                    pet.setDateBirth(resultSet.getDate("date_birth").toLocalDate());
+                    Owner owner = ownerDAO.getOwnerById(resultSet.getInt("owner_id"));
+                    pet.setOwner(owner);
+                    String petType = getPetTypeById(resultSet.getInt("pet_type_id"));
+                    pet.setPetType(petType);
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+        }
+        return pet;
+    }
+
+    public void insertPet(Pet pet) {
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("insert into pet " +
+                     "(name, date_birth, pet_type_id, owner_id) values (?,?,?,?)")
+        ) {
+            preparedStatement.setString(1, pet.getName());
+            preparedStatement.setDate(2, Date.valueOf(pet.getDateBirth()));
+            Integer petTypeId = getPetTypeIdByName(pet.getPetType());
+            preparedStatement.setInt(3, petTypeId);
+            preparedStatement.setInt(4, pet.getOwner().getOwner_id());
+
+            int row = preparedStatement.executeUpdate();
+            if (row > 0) {
+                System.out.println("Insert by pet is success");
+            } else {
+                System.out.println("Insert by pet is unsuccess");
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    public void updatePet(Pet pet) {
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("update pet " +
+                     "set name=?, date_birth=?, pet_type_id=?, owner_id=? where pet_id=?")
+        ) {
+            preparedStatement.setString(1, pet.getName());
+            preparedStatement.setDate(2, Date.valueOf(pet.getDateBirth()));
+            Integer petTypeId = getPetTypeIdByName(pet.getPetType());
+            preparedStatement.setInt(3, petTypeId);
+            preparedStatement.setInt(4, pet.getOwner().getOwner_id());
+            preparedStatement.setInt(5, pet.getPet_id());
+
+            int row = preparedStatement.executeUpdate();
+            if (row > 0) {
+                System.out.println("Update by pet is success");
+            } else {
+                System.out.println("Update by pet is unsuccess");
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    public List<String> getAllPetTypes() {
+        List<String> petTypes = new ArrayList<>();
+        try (Connection connection = dataSource.getConnection();
+             Statement statement = connection.createStatement();
+             ResultSet resultSet = statement.executeQuery("SELECT * from pet_type")
+        ) {
+            while (resultSet.next()) {
+                petTypes.add(resultSet.getString("name"));
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+        }
+        return petTypes;
+    }
+
+    public int deletePetById(Integer petId) {
+        int row = 0;
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("delete from pet where pet_id = ?");
+        ) {
+            preparedStatement.setInt(1, petId);
+            row = preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+        }
+        return row;
+    }
+}

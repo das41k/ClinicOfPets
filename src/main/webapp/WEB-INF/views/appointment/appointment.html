@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!--/*@thymesVar id="appointment" type="ru.petrosyan.clinicOfPet.model.Appointment"*/-->
+    <title>Сведения о приеме</title>
+    <link rel="stylesheet" th:href="@{/css/appointment-styles.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!--/*@thymesVar id="appointment" type="ru.petrosyan.clinicOfPet.model.Appointment"*/-->
+    <div th:object="${appointment}">
+
+        <h2> Информация о приеме </h2>
+        Дата приема: <p th:text="*{dateAdmission}"> 2025-05-05 </p>
+        Время приема <p th:text="*{timeAdmission}"> 10:00 </p>
+        Статус приема <p th:text="*{status.getDbValue()}"> запланирован </p>
+
+        <h2> Информация о ветеринаре </h2>
+        ФИО: <p th:text="*{veterinarian.name}"> Барсуков Максим Вячеславович </p>
+        Контактный телефон <p th:text="*{veterinarian.phone}"> +77779994444 </p>
+
+        <h2> Информация о питомце </h2>
+        Имя: <p th:text="*{pet.name}"> Мурка </p>
+        Тип животного: <p th:text="*{pet.petType}"> Попугай </p>
+        Дата рождения: <p th:text="*{pet.dateBirth}"> 2005-05-05 </p>
+        Владелец: <p th:text="*{pet.owner.name}"> Петросян Армен Арташесович </p>
+        Контактный телефон владельца: <p th:text="*{pet.owner.phone}"> 89223334433 </p>
+
+    </div>
+    <div>
+        <a th:href="@{/appointment/{id}/edit(id=${appointment.appointment_id})}"> Изменить сведения </a>
+        <form th:action="@{/appointment/{id}(id=${appointment.appointment_id})}" th:method="DELETE">
+            <input type="submit" value="Удалить прием">
+        </form>
+    </div>
+</body>
+</html>

@@ -28,6 +28,7 @@
             <th> Владелец </th>
             <th> Ветеринар </th>
             <th> Статус </th>
+            <th> Действие </th>
         </tr>
         </thead>
         <tbody>
@@ -40,6 +41,7 @@
             <td><a th:href="@{/owner/{id}(id=*{pet.owner.owner_id})}" th:text="*{pet.owner.name}"> Петросян Армен Арташесович</a></td>
             <td> <a th:href="@{/veterinarian/{id}(id=*{veterinarian.veterinarian_id})}" th:text="*{veterinarian.name}"> Барсуков Максим Вячеславович </a> </td>
             <td th:text="*{status.getDbValue()}"> </td>
+            <td> <a th:href="@{/appointment/{id}(id=*{appointment_id})}"> Посмотреть сведения </a> </td>
         </tr>
         </tbody>
     </table>

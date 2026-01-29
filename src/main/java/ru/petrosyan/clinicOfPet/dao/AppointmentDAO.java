@@ -29,7 +29,7 @@ public class AppointmentDAO {
         List<Appointment> appointments = new ArrayList<>();
         try (Connection connection = dataSource.getConnection();
              Statement statement = connection.createStatement();
-             ResultSet resultSet = statement.executeQuery("SELECT * from appointment")
+             ResultSet resultSet = statement.executeQuery("SELECT * from appointment order by date_admission, time_admission, veterinarian_id")
         ) {
             while (resultSet.next()) {
                 Appointment appointment = new Appointment();

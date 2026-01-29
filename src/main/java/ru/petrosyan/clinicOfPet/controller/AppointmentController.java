@@ -101,4 +101,15 @@ public class AppointmentController {
         appointmentDAO.updateAppointment(appointment);
         return "redirect:/appointment";
     }
+
+    @DeleteMapping("/{id}")
+    public String deleteAppointmentById(@PathVariable("id") Integer id, RedirectAttributes redirectAttributes) {
+        int row = appointmentDAO.deleteAppointmentById(id);
+        if (row > 0) {
+            redirectAttributes.addFlashAttribute("info", "Прием был успешно удален!");
+        } else {
+            redirectAttributes.addFlashAttribute("error", "Данный прием не найден! Возможно он был удален!");
+        }
+        return "redirect:/appointment";
+    }
 }

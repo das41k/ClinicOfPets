@@ -144,6 +144,19 @@ public class AppointmentDAO {
             System.out.println(e.getMessage());
             e.printStackTrace();
         }
+    }
 
+    public int deleteAppointmentById(Integer id) {
+        int row = 0;
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("delete from appointment where appointment_id = ?")
+        ) {
+            preparedStatement.setInt(1, id);
+            row = preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+        }
+        return row;
     }
 }

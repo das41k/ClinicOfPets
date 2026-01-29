@@ -109,7 +109,7 @@ public class AppointmentDAO {
             preparedStatement.setDate(1, Date.valueOf(appointment.getDateAdmission()));
             preparedStatement.setTime(2, Time.valueOf(appointment.getTimeAdmission()));
             preparedStatement.setInt(3, appointment.getVeterinarian().getVeterinarian_id());
-            preparedStatement.setInt(4, appointment.getVeterinarian().getVeterinarian_id());
+            preparedStatement.setInt(4, appointment.getPet().getPet_id());
 
             int row = preparedStatement.executeUpdate();
             if (row > 0) {

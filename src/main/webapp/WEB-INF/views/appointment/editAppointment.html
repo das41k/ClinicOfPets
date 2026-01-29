@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Изменение приема</title>
+    <link rel="stylesheet" th:href="@{/css/appointment-styles.css}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+<!--/*@thymesVar id="appointment" type="ru.petrosyan.clinicOfPet.model.Appointment"*/-->
+<form th:action="@{/appointment/{id}(id=*{appointment_id})}" th:method="PATCH" th:object="${appointment}">
+
+    <label> Введите дату приема
+        <input type="date" th:field="*{dateAdmission}">
+    </label>
+    <div th:if="${#fields.hasErrors()}" th:errors="*{dateAdmission}"></div>
+
+    <label> Введите время приема
+        <input type="time" th:field="*{timeAdmission}">
+    </label>
+    <div th:if="${#fields.hasErrors()}" th:errors="*{timeAdmission}"></div>
+
+    <label> Выберите ветеринара
+        <select th:field="*{veterinarian.veterinarian_id}" id="veterinarian">
+            <!--/*@thymesVar id="veterinarian" type="ru.petrosyan.clinicOfPet.model.Veterinarian"*/-->
+            <option th:each="veterinarian : ${veterinarians}" th:value="${veterinarian.veterinarian_id}"
+                    th:text="${veterinarian.name}"></option>
+        </select>
+    </label>
+    <div th:if="${#fields.hasErrors()}" th:errors="*{veterinarian}"> </div>
+
+    <label> Выберите питомца
+        <select th:field="*{pet.pet_id}" id="pet">
+            <!--/*@thymesVar id="pet" type="ru.petrosyan.clinicOfPet.model.Pet"*/-->
+            <option th:each="pet : ${pets}" th:value="${pet.pet_id}"
+                    th:text="${pet.name}"> </option>
+        </select>
+    </label>
+
+    <input type="submit" value="Изменить">
+</form>
+</body>
+</html>

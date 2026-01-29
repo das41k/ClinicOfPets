@@ -27,6 +27,9 @@ public class AppointmentValidator implements Validator {
     @Override
     public void validate(Object target, Errors errors) {
         Appointment appointment = (Appointment) target;
+        if (appointment.getDateAdmission() == null || appointment.getTimeAdmission() == null) {
+            return;
+        }
         checkValidDate(appointment.getDateAdmission(), errors);
         checkValidTime(appointment.getTimeAdmission(), errors);
         checkUniqueForAppointment(appointment, errors);

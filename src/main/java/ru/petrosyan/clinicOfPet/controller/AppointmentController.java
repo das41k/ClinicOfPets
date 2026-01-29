@@ -1,13 +1,20 @@
 package ru.petrosyan.clinicOfPet.controller;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import ru.petrosyan.clinicOfPet.dao.AppointmentDAO;
+import ru.petrosyan.clinicOfPet.dao.PetDAO;
+import ru.petrosyan.clinicOfPet.dao.VeterinarianDAO;
 import ru.petrosyan.clinicOfPet.model.Appointment;
+import ru.petrosyan.clinicOfPet.model.Pet;
+import ru.petrosyan.clinicOfPet.model.Veterinarian;
+import ru.petrosyan.clinicOfPet.utils.AppointmentValidator;
+
+import javax.validation.Valid;
 import java.util.List;
 
 @Controller
@@ -15,9 +22,16 @@ import java.util.List;
 public class AppointmentController {
 
     private final AppointmentDAO appointmentDAO;
+    private final AppointmentValidator appointmentValidator;
+    private final VeterinarianDAO veterinarianDAO;
+    private final PetDAO petDAO;
 
-    public AppointmentController(AppointmentDAO appointmentDAO) {
+    @Autowired
+    public AppointmentController(AppointmentDAO appointmentDAO, AppointmentValidator appointmentValidator, VeterinarianDAO veterinarianDAO, PetDAO petDAO) {
         this.appointmentDAO = appointmentDAO;
+        this.appointmentValidator = appointmentValidator;
+        this.veterinarianDAO = veterinarianDAO;
+        this.petDAO = petDAO;
     }
 
     @GetMapping
@@ -35,6 +49,31 @@ public class AppointmentController {
             return "appointment/appointment";
         }
         redirectAttributes.addFlashAttribute("error", "Данный прием не найден! Возможно он был удален!");
+        return "redirect:/appointment";
+    }
+
+    @GetMapping("/new")
+    public String getFormInsert(Model model) {
+        model.addAttribute("appointment", new Appointment());
+        getDetailsForm(model);
+        return "appointment/addAppointment";
+    }
+
+    public void getDetailsForm(Model model) {
+        List<Veterinarian> veterinarians = veterinarianDAO.getAllVeterinarians();
+        List<Pet> pets = petDAO.getAllPets();
+        model.addAttribute("veterinarians", veterinarians);
+        model.addAttribute("pets", pets);
+    }
+
+    @PostMapping
+    public String insertAppointment(@ModelAttribute("appointment") @Valid Appointment appointment, BindingResult bindingResult, Model model) {
+        appointmentValidator.validate(appointment, bindingResult);
+        if (bindingResult.hasErrors()) {
+            getDetailsForm(model);
+            return "appointment/addAppointment";
+        }
+        appointmentDAO.insertAppointment(appointment);
         return "redirect:/appointment";
     }
 }
